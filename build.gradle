@@ -26,6 +26,9 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
+}
 tasks.named('test') {
 	useJUnitPlatform()
 }
