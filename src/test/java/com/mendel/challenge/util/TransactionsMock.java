@@ -31,9 +31,27 @@ public final class TransactionsMock {
                 .build()
     );
 
+    private List<Transaction> ONLY_PARENT = Arrays.asList(
+            Transaction.builder()
+                    .id(1L)
+                    .amount(1.0)
+                    .type(TransactionTypes.CARS.getName())
+                    .build(),
+            Transaction.builder()
+                    .id(2L)
+                    .amount(2.0)
+                    .type(TransactionTypes.GROCERIES.getName())
+                    .parentId(1L)
+                    .build()
+    );
+
 
     public List<Transaction> getCommonExample(){
         return COMMON_EXAMPLE;
+    }
+
+    public List<Transaction> getOnlyParents(){
+        return ONLY_PARENT;
     }
 
 }
