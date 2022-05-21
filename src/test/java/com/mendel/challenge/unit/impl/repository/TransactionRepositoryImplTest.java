@@ -3,6 +3,7 @@ package com.mendel.challenge.unit.impl.repository;
 import com.mendel.challenge.common.TransactionTypes;
 import com.mendel.challenge.entity.Transaction;
 import com.mendel.challenge.repository.impl.TransactionRepositoryImpl;
+import com.mendel.challenge.util.TransactionsMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
@@ -14,42 +15,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TransactionRepositoryImplTest {
 
-
     private TransactionRepositoryImpl transactionRepository;
-
-
+    private static TransactionsMock transactionsMock = new TransactionsMock();
     private void prepareMocks() {
         this.transactionRepository = new TransactionRepositoryImpl();
-
-        transactionRepository.save(
-                Transaction.builder()
-                        .id(1L)
-                        .amount(1.0)
-                        .type(TransactionTypes.CARS.getName())
-                        .build()
-        );
-        transactionRepository.save(
-                Transaction.builder()
-                        .id(2L)
-                        .amount(2.0)
-                        .type(TransactionTypes.GROCERIES.getName())
-                        .parentId(1L)
-                        .build()
-        );
-        transactionRepository.save(
-                Transaction.builder()
-                        .id(3L)
-                        .amount(3.0)
-                        .type(TransactionTypes.CARS.getName())
-                        .build()
-        );
-        transactionRepository.save(
-                Transaction.builder()
-                        .id(4L)
-                        .amount(4.0)
-                        .type(TransactionTypes.SHOPPING.getName())
-                        .build()
-        );
+        transactionsMock.getCommonExample().forEach(transaction -> transactionRepository.save(transaction));
     }
 
     @BeforeEach
