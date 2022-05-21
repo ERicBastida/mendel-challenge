@@ -27,7 +27,9 @@ dependencies {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
+
+    implementation 'org.projectlombok:lombok:1.18.22'
+    implementation 'org.springframework.boot:spring-boot-starter-web:2.6.7'
 }
 tasks.named('test') {
 	useJUnitPlatform()

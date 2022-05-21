@@ -2,19 +2,24 @@ package com.mendel.challenge.unit.impl.service;
 
 import com.mendel.challenge.repository.TransactionRepository;
 import com.mendel.challenge.service.TransactionService;
+import com.mendel.challenge.service.impl.TransactionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+
+import java.util.Arrays;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
 
 class TransactionServiceTest {
 
     @Mock
     private TransactionRepository transactionRepository;
-
-    @InjectMocks
-    private TransactionService transactionService;
+    private TransactionService transactionService = new TransactionServiceImpl(transactionRepository);
 
     @BeforeEach
     void setUp() {
@@ -22,7 +27,19 @@ class TransactionServiceTest {
 
     }
 
-    void getTransaction(){}
-    void getTransactionByType(){}
-    void getTotalAmountTransaction(){}
+    void getTransaction() {
+    }
+
+    void getTransactionByType() {
+    }
+
+    @Test
+    void getTotalAmountTransaction_notFound() {
+
+        when(transactionRepository.getByType(anyString())).thenReturn(Arrays.asList());
+
+        Double totalAmount = transactionService.getTotalAmount(33L);
+
+        assertEquals(totalAmount, 0.0);
+    }
 }
