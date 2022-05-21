@@ -1,5 +1,6 @@
 package com.mendel.challenge.unit.impl.service;
 
+import com.mendel.challenge.common.TransactionTypes;
 import com.mendel.challenge.repository.TransactionRepository;
 import com.mendel.challenge.repository.impl.TransactionRepositoryImpl;
 import com.mendel.challenge.service.TransactionService;
@@ -28,21 +29,62 @@ class TransactionServiceTest {
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
     }
 
-    void getTransaction() {
+    @Test
+    void getTransaction_OK() {
+        when(transactionRepository.get(any())).thenReturn(transactionsMock.getOnlyOne());
+
+        var result = transactionService.get(transactionsMock.getOnlyOne().getId());
+
+        assertEquals(result, transactionsMock.getOnlyOne());
     }
 
-    void getTransactionByType() {
+    @Test
+    void getTransaction_NotFound() {
+        when(transactionRepository.get(any())).thenReturn(null);
+
+        var result = transactionService.get(transactionsMock.getOnlyOne().getId());
+
+        assertEquals(result, null);
+    }
+
+    @Test
+    void getTransactionByType_NotFound() {
+
+        when(transactionRepository.getByType(any())).thenReturn(Arrays.asList());
+
+        var result = transactionService.getByType(null);
+
+        assertEquals(result.size(), 0);
+    }
+
+    @Test
+    void getTransactionByType_OK() {
+
+        when(transactionRepository.getByType(any())).thenReturn(transactionsMock.getOnly2CarsTransactions());
+
+        var result = transactionService.getByType(TransactionTypes.CARS.getName());
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void getTransactionByType_nullID() {
+
+        when(transactionRepository.getByType(any())).thenReturn(Arrays.asList());
+
+        var result = transactionService.getByType(null);
+
+        assertEquals(0, result.size());
     }
 
     @Test
     void getTotalAmountTransaction_notFound() {
 
-        when(transactionRepository.getByType(anyString())).thenReturn(Arrays.asList());
+        when(transactionRepository.getByRelationship(any())).thenReturn(Arrays.asList());
 
-        Double totalAmount = transactionService.getTotalAmount(33L);
+        var totalAmount = transactionService.getTotalAmount(33L);
 
         assertEquals(totalAmount, 0.0);
     }
@@ -52,8 +94,28 @@ class TransactionServiceTest {
 
         when(transactionRepository.getByRelationship(any())).thenReturn(transactionsMock.getOnlyParents());
 
-        Double totalAmount = transactionService.getTotalAmount(1L);
+        var totalAmount = transactionService.getTotalAmount(1L);
 
         assertEquals(3.0, totalAmount);
+    }
+
+    @Test
+    void getTotalAmountTransaction_OnlyOneOK() {
+
+        when(transactionRepository.getByRelationship(any())).thenReturn(Arrays.asList(transactionsMock.getOnlyOne()));
+
+        var totalAmount = transactionService.getTotalAmount(1L);
+
+        assertEquals(transactionsMock.getOnlyOne().getAmount(), totalAmount);
+    }
+
+    @Test
+    void getTotalAmountTransaction_nullFromRepository() {
+
+        when(transactionRepository.getByType(anyString())).thenReturn(null);
+
+        var totalAmount = transactionService.getTotalAmount(33L);
+
+        assertEquals(totalAmount, 0.0);
     }
 }

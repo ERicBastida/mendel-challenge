@@ -5,6 +5,9 @@ import com.mendel.challenge.repository.TransactionRepository;
 import com.mendel.challenge.service.TransactionService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 public class TransactionServiceImpl implements TransactionService {
 
@@ -17,12 +20,16 @@ public class TransactionServiceImpl implements TransactionService {
 
     @Override
     public Transaction get(Long id) {
-        return null;
+        return transactionRepository.get(id);
     }
 
     @Override
-    public Transaction getByType(String type) {
-        return null;
+    public List<Long> getByType(String type) {
+
+        return transactionRepository.getByType(type)
+                .stream()
+                .map(Transaction::getId)
+                .collect(Collectors.toList());
     }
 
     @Override
