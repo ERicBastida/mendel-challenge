@@ -2,11 +2,10 @@ package com.mendel.challenge.unit.impl.repository;
 
 import com.mendel.challenge.common.TransactionTypes;
 import com.mendel.challenge.entity.Transaction;
-import com.mendel.challenge.repository.TransactionRepository;
+import com.mendel.challenge.repository.impl.TransactionRepositoryImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockitoAnnotations;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
@@ -15,10 +14,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TransactionRepositoryImplTest {
 
-    @Autowired
-    private TransactionRepository transactionRepository;
+
+    private TransactionRepositoryImpl transactionRepository;
+
 
     private void prepareMocks() {
+        this.transactionRepository = new TransactionRepositoryImpl();
+
         transactionRepository.save(
                 Transaction.builder()
                         .id(1L)
@@ -57,7 +59,7 @@ class TransactionRepositoryImplTest {
     }
 
     @Test
-    void getTransactionByType() {
+    void getTransactionByType_OK() {
 
         List<Transaction> carsTransactions = transactionRepository.getByType(TransactionTypes.CARS.getName());
 
@@ -65,10 +67,34 @@ class TransactionRepositoryImplTest {
     }
 
     @Test
-    void getTransactionByRelationship() {
+    void getTransactionByType_NotFound() {
 
-        List<Transaction> carsTransactions = transactionRepository.getByRelationship(1L);
+        List<Transaction> transactions = transactionRepository.getByType("Testing");
 
-        assertEquals(2, carsTransactions.size());
+        assertEquals(0, transactions.size());
+    }
+
+    @Test
+    void getTransactionByRelationship_OK() {
+
+        List<Transaction> transactions = transactionRepository.getByRelationship(1L);
+
+        assertEquals(2, transactions.size());
+    }
+
+    @Test
+    void getTransactionByRelationship_NotFound() {
+
+        List<Transaction> transactions = transactionRepository.getByRelationship(33L);
+
+        assertEquals(0, transactions.size());
+    }
+
+    @Test
+    void getTransactionByRelationship_OnlyOne() {
+
+        List<Transaction> transactions = transactionRepository.getByRelationship(4L);
+
+        assertEquals(1, transactions.size());
     }
 }
