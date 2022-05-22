@@ -1,5 +1,6 @@
 package com.mendel.challenge.repository.impl;
 
+import com.mendel.challenge.dto.TransactionDTO;
 import com.mendel.challenge.entity.Transaction;
 import com.mendel.challenge.repository.TransactionRepository;
 import org.springframework.stereotype.Service;
@@ -14,13 +15,18 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     Map<Long, Transaction> transactions = new HashMap<>();
 
     @Override
-    public Transaction get(Long id) {
-        return transactions.get(id);
+    public TransactionDTO get(Long id) {
+        Transaction result = transactions.get(id);
+        return ObjectUtils.isEmpty(result) ? null :  result.toDto();
     }
 
     @Override
-    public void save(Transaction transaction) {
-        transactions.put(transaction.getId(), transaction);
+    public Boolean save(TransactionDTO transaction) {
+        Boolean result =  !transactions.containsKey(transaction.getId());
+        Transaction transactionToSave = Transaction.builder().build();
+        transactionToSave.fromDto(transaction);
+        transactions.put(transaction.getId(), transactionToSave);
+        return result;
     }
 
     @Override
@@ -44,15 +50,15 @@ public class TransactionRepositoryImpl implements TransactionRepository {
     }
 
     @Override
-    public List<Transaction> getByRelationship(Long id) {
-        List<Transaction> result = new ArrayList<>();
+    public List<TransactionDTO> getByRelationship(Long id) {
+        List<TransactionDTO> result = new ArrayList<>();
         if (transactions.containsKey(id)) {
             Transaction relation = getByParentId(id);
             if (ObjectUtils.isEmpty(relation)) {
-                result.add(transactions.get(id));
+                result.add(transactions.get(id).toDto());
             } else {
                 result = getByRelationship(relation.getId());
-                result.add(transactions.get(id));
+                result.add(transactions.get(id).toDto());
             }
         }
         return result;

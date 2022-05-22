@@ -1,17 +1,18 @@
 package com.mendel.challenge.repository;
 
+import com.mendel.challenge.dto.TransactionDTO;
 import com.mendel.challenge.entity.Transaction;
 
 import java.util.List;
 
 public interface TransactionRepository {
-    Transaction get(Long id);
+    TransactionDTO get(Long id);
 
-    void save(Transaction transaction);
+    Boolean save(TransactionDTO transaction);
 
     List<Transaction> getByType(String type);
 
-    List<Transaction> getByRelationship(Long id);
+    List<TransactionDTO> getByRelationship(Long id);
 
     Transaction getByParentId(Long id);
 

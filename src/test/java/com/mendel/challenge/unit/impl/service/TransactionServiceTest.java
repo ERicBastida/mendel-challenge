@@ -26,6 +26,8 @@ class TransactionServiceTest {
     private TransactionRepository transactionRepository = mock(TransactionRepositoryImpl.class);
     private TransactionService transactionService = new TransactionServiceImpl(transactionRepository);
 
+    private final Long TRANSACTION_ID = 1L;
+
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
@@ -35,7 +37,7 @@ class TransactionServiceTest {
     void getTransaction_OK() {
         when(transactionRepository.get(any())).thenReturn(transactionsMock.getOnlyOne());
 
-        var result = transactionService.get(transactionsMock.getOnlyOne().getId());
+        var result = transactionService.get(TRANSACTION_ID);
 
         assertEquals(result, transactionsMock.getOnlyOne());
     }
@@ -44,7 +46,7 @@ class TransactionServiceTest {
     void getTransaction_NotFound() {
         when(transactionRepository.get(any())).thenReturn(null);
 
-        var result = transactionService.get(transactionsMock.getOnlyOne().getId());
+        var result = transactionService.get(TRANSACTION_ID);
 
         assertEquals(result, null);
     }
@@ -86,7 +88,7 @@ class TransactionServiceTest {
 
         var totalAmount = transactionService.getTotalAmount(33L);
 
-        assertEquals(totalAmount, 0.0);
+        assertEquals(totalAmount, null);
     }
 
     @Test
@@ -96,7 +98,7 @@ class TransactionServiceTest {
 
         var totalAmount = transactionService.getTotalAmount(1L);
 
-        assertEquals(3.0, totalAmount);
+        assertEquals(3.0, totalAmount.getSum());
     }
 
     @Test
@@ -106,7 +108,7 @@ class TransactionServiceTest {
 
         var totalAmount = transactionService.getTotalAmount(1L);
 
-        assertEquals(transactionsMock.getOnlyOne().getAmount(), totalAmount);
+        assertEquals(transactionsMock.getOnlyOne().getAmount(), totalAmount.getSum());
     }
 
     @Test
@@ -116,6 +118,6 @@ class TransactionServiceTest {
 
         var totalAmount = transactionService.getTotalAmount(33L);
 
-        assertEquals(totalAmount, 0.0);
+        assertEquals(totalAmount, null);
     }
 }

@@ -1,6 +1,7 @@
 package com.mendel.challenge.unit.impl.repository;
 
 import com.mendel.challenge.common.TransactionTypes;
+import com.mendel.challenge.dto.TransactionDTO;
 import com.mendel.challenge.entity.Transaction;
 import com.mendel.challenge.repository.impl.TransactionRepositoryImpl;
 import com.mendel.challenge.util.TransactionsMock;
@@ -19,7 +20,7 @@ class TransactionRepositoryImplTest {
     private static TransactionsMock transactionsMock = new TransactionsMock();
     private void prepareMocks() {
         this.transactionRepository = new TransactionRepositoryImpl();
-        transactionsMock.getCommonExample().forEach(transaction -> transactionRepository.save(transaction));
+        transactionsMock.getCommonExample().forEach(transaction -> transactionRepository.save(transaction.toDto()));
     }
 
     @BeforeEach
@@ -47,7 +48,7 @@ class TransactionRepositoryImplTest {
     @Test
     void getTransactionByRelationship_OK() {
 
-        List<Transaction> transactions = transactionRepository.getByRelationship(1L);
+        List<TransactionDTO> transactions = transactionRepository.getByRelationship(1L);
 
         assertEquals(2, transactions.size());
     }
@@ -55,7 +56,7 @@ class TransactionRepositoryImplTest {
     @Test
     void getTransactionByRelationship_NotFound() {
 
-        List<Transaction> transactions = transactionRepository.getByRelationship(33L);
+        List<TransactionDTO> transactions = transactionRepository.getByRelationship(33L);
 
         assertEquals(0, transactions.size());
     }
@@ -63,7 +64,7 @@ class TransactionRepositoryImplTest {
     @Test
     void getTransactionByRelationship_OnlyOne() {
 
-        List<Transaction> transactions = transactionRepository.getByRelationship(4L);
+        List<TransactionDTO> transactions = transactionRepository.getByRelationship(4L);
 
         assertEquals(1, transactions.size());
     }
