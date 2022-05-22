@@ -1,5 +1,7 @@
 package com.mendel.challenge.service.impl;
 
+import com.mendel.challenge.dto.TransactionDTO;
+import com.mendel.challenge.dto.TransactionSumDTO;
 import com.mendel.challenge.entity.Transaction;
 import com.mendel.challenge.repository.TransactionRepository;
 import com.mendel.challenge.service.TransactionService;
@@ -19,7 +21,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Transaction get(Long id) {
+    public TransactionDTO get(Long id) {
         return transactionRepository.get(id);
     }
 
@@ -33,14 +35,22 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public Double getTotalAmount(Long id) {
+    public TransactionSumDTO getTotalAmount(Long id) {
         Double totalAmountResult = 0.0;
+        TransactionSumDTO result = new TransactionSumDTO();
+        List<TransactionDTO> relatedTransactions = transactionRepository.getByRelationship(id);
 
-        totalAmountResult = transactionRepository.getByRelationship(id)
+        totalAmountResult = relatedTransactions
                 .stream()
-                .mapToDouble(Transaction::getAmount)
+                .mapToDouble(TransactionDTO::getAmount)
                 .sum();
+        result.setSum(totalAmountResult);
 
-        return totalAmountResult;
+        return relatedTransactions.size() > 0 ? result : null;
+    }
+
+    @Override
+    public TransactionDTO setTransaction(TransactionDTO transaction) {
+        return transactionRepository.save(transaction) ? transaction : null;
     }
 }

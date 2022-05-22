@@ -1,10 +1,12 @@
 package com.mendel.challenge.util;
 
 import com.mendel.challenge.common.TransactionTypes;
+import com.mendel.challenge.dto.TransactionDTO;
 import com.mendel.challenge.entity.Transaction;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class TransactionsMock {
     private Transaction ONLY_ONE = Transaction.builder()
@@ -65,12 +67,12 @@ public final class TransactionsMock {
         return COMMON_EXAMPLE;
     }
 
-    public List<Transaction> getOnlyParents() {
-        return ONLY_PARENT;
+    public List<TransactionDTO> getOnlyParents() {
+        return ONLY_PARENT.stream().map(Transaction::toDto).collect(Collectors.toList());
     }
 
-    public Transaction getOnlyOne() {
-        return ONLY_ONE;
+    public TransactionDTO getOnlyOne() {
+        return ONLY_ONE.toDto();
     }
 
     public List<Transaction> getOnly2CarsTransactions() {
