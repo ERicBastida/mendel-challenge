@@ -14,6 +14,8 @@ import org.springframework.http.*;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.ObjectUtils;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @ExtendWith(SpringExtension.class)
@@ -76,7 +78,7 @@ public class IntegrationTest {
     }
 
     @Test
-    void getSumTransaction_NotFound() {
+    void getTransactionSum_NotFound() {
 
 
         var getTransactionResponse = testRestTemplate.getForEntity(BASE_URL_SUM + "10", TransactionDTO.class);
@@ -87,9 +89,9 @@ public class IntegrationTest {
     }
 
     @Test
-    void getSumTransaction_OK() {
+    void getTransactionSum_OK() {
 
-        var transactionMock =  transactionsMock.getOnlyOne();
+        var transactionMock = transactionsMock.getOnlyOne();
         transactionMock.setId(5L);
 
         HttpEntity<TransactionDTO> requestUpdate = new HttpEntity<>(transactionMock, new HttpHeaders());
@@ -102,8 +104,35 @@ public class IntegrationTest {
         assertEquals(HttpStatus.OK, getTransactionResponse.getStatusCode());
         assertEquals(transactionMock.getAmount(), getTransactionResponse.getBody().getSum());
 
+    }
 
+    @Test
+    void getTransactionByType_notFound() {
+
+
+        var getTransactionResponse = testRestTemplate.getForEntity(BASE_URL_TYPE + "5", List.class);
+
+        assertEquals(HttpStatus.NOT_FOUND, getTransactionResponse.getStatusCode());
+        Assertions.assertTrue(ObjectUtils.isEmpty(getTransactionResponse.getBody()));
 
     }
+
+    @Test
+    void getTransactionByType_OK() {
+        Long TRANSACTION_ID = 6L;
+        var transactionMock = transactionsMock.getOnlyOne();
+        transactionMock.setId(TRANSACTION_ID);
+
+        HttpEntity<TransactionDTO> requestUpdate = new HttpEntity<>(transactionMock, new HttpHeaders());
+
+        var newTransactionResponse = testRestTemplate.exchange(BASE_URL + TRANSACTION_ID, HttpMethod.PUT, requestUpdate, TransactionDTO.class);
+        var getTransactionResponse = testRestTemplate.getForEntity(BASE_URL_TYPE + transactionMock.getType(), List.class);
+
+        assertEquals(HttpStatus.OK, getTransactionResponse.getStatusCode());
+        assertEquals(HttpStatus.CREATED, newTransactionResponse.getStatusCode());
+        Assertions.assertTrue(getTransactionResponse.getBody().size() > 0);
+
+    }
+
 
 }

@@ -1,12 +1,11 @@
 package com.mendel.challenge.dto;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Builder
+
+@Setter
+@Getter
 public class TransactionSumDTO {
-
     private Double sum;
-
 }

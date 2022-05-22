@@ -37,15 +37,16 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public TransactionSumDTO getTotalAmount(Long id) {
         Double totalAmountResult = 0.0;
-
+        TransactionSumDTO result = new TransactionSumDTO();
         List<TransactionDTO> relatedTransactions = transactionRepository.getByRelationship(id);
 
         totalAmountResult = relatedTransactions
                 .stream()
                 .mapToDouble(TransactionDTO::getAmount)
                 .sum();
+        result.setSum(totalAmountResult);
 
-        return relatedTransactions.size() > 0 ? TransactionSumDTO.builder().sum(totalAmountResult).build() : null;
+        return relatedTransactions.size() > 0 ? result : null;
     }
 
     @Override
