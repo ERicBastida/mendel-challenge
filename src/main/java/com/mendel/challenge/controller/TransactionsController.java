@@ -1,5 +1,6 @@
 package com.mendel.challenge.controller;
 
+import com.mendel.challenge.common.TransactionTypes;
 import com.mendel.challenge.dto.TransactionSumDTO;
 import com.mendel.challenge.dto.TransactionDTO;
 import com.mendel.challenge.service.TransactionService;
@@ -20,15 +21,17 @@ public class TransactionsController {
     private TransactionService transactionService;
 
     @GetMapping("/{transactionId}")
-    public ResponseEntity<TransactionDTO> getTransaction(@PathVariable Long transactionId){
+    public ResponseEntity<TransactionDTO> getTransaction(@PathVariable Long transactionId) throws Exception {
 
-        TransactionDTO resultTransaction = transactionService.get(transactionId);
+        throw new Exception("aloja");
 
-        return  ResponseEntity.status(ObjectUtils.isEmpty(resultTransaction)? HttpStatus.NOT_FOUND : HttpStatus.OK ).body(resultTransaction);
+//        TransactionDTO resultTransaction = transactionService.get(transactionId);
+//
+//        return  ResponseEntity.status(ObjectUtils.isEmpty(resultTransaction)? HttpStatus.NOT_FOUND : HttpStatus.OK ).body(resultTransaction);
     }
     @GetMapping("/types/{transactionType}")
-    public ResponseEntity<List<Long>> getTransactionTypes(@PathVariable String transactionType){
-        List<Long> resultTransaction = transactionService.getByType(transactionType);
+    public ResponseEntity<List<Long>> getTransactionTypes(@PathVariable TransactionTypes transactionType){
+        List<Long> resultTransaction = transactionService.getByType(transactionType.getName());
         return  ResponseEntity.status(ObjectUtils.isEmpty(resultTransaction)? HttpStatus.NOT_FOUND : HttpStatus.OK ).body(resultTransaction);
     }
     @GetMapping("/sum/{transactionId}")
