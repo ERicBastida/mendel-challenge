@@ -21,13 +21,11 @@ public class TransactionsController {
     private TransactionService transactionService;
 
     @GetMapping("/{transactionId}")
-    public ResponseEntity<TransactionDTO> getTransaction(@PathVariable Long transactionId) throws Exception {
+    public ResponseEntity<TransactionDTO> getTransaction(@PathVariable Long transactionId){
 
-        throw new Exception("aloja");
+        TransactionDTO resultTransaction = transactionService.get(transactionId);
 
-//        TransactionDTO resultTransaction = transactionService.get(transactionId);
-//
-//        return  ResponseEntity.status(ObjectUtils.isEmpty(resultTransaction)? HttpStatus.NOT_FOUND : HttpStatus.OK ).body(resultTransaction);
+        return  ResponseEntity.status(ObjectUtils.isEmpty(resultTransaction)? HttpStatus.NOT_FOUND : HttpStatus.OK ).body(resultTransaction);
     }
     @GetMapping("/types/{transactionType}")
     public ResponseEntity<List<Long>> getTransactionTypes(@PathVariable TransactionTypes transactionType){
